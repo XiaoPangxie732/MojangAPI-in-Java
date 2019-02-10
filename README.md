@@ -1,8 +1,23 @@
 # MojangAPI-in-Java
 Mojang Public API Java implementation.  
 It is still in development, so please don't download it :).  
-<br>
-<br>
+    
+## Download
+Maven:
+```xml
+<repository>
+  <id>xiaopangxie732</id>
+  <url>http://yc.aikeshi.top:40002/repository/maven-public/</url>
+</repository>
+```
+```xml
+<dependency>
+  <groupId>cn.xiaopangxie732</groupId>
+  <artifactId>mojang_api</artifactId>
+  <version>0.0.1</version>
+</dependency>
+```
+    
 ## Usage:      
 To check API server status:
 ```java
