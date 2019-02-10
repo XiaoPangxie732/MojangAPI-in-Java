@@ -3,8 +3,8 @@ Mojang Public API Java implementation.
 It is still in development, so please don't download it :).  
 <br>
 <br>
-<h3>Usage:</h3>      
-<h5>To check API server status:</h5>
+## Usage:      
+To check API server status:
 ```java
 MojangAPI api = new MojangAPI(); //Create base MojangAPI
 Status stat = api.createStatus(); //Create Status class
