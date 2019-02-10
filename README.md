@@ -17,7 +17,9 @@ Maven:
   <version>0.0.1</version>
 </dependency>
 ```
-    
+  
+Jar file download: [Click here](yc.aikeshi.top:30003/xiaopangxie732/downloads/java-jar/mojang-api-java.jar)  
+Javadoc: [Click here](yc.aikeshi.top:30003/xiaopangxie732/javadoc/mojang-api)
 ## Usage:      
 To check API server status:
 ```java
