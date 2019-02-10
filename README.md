@@ -1,6 +1,6 @@
 # MojangAPI-in-Java
 Mojang Public API Java implementation.  
-It is still in development, so please don't download it :).  
+<h2>It is still in development.</h2>
     
 ## Download
 Maven:
