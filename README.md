@@ -7,7 +7,7 @@ Maven:
 ```xml
 <repository>
   <id>xiaopangxie732</id>
-  <url>http://yc.aikeshi.top:40002/repository/maven-public/</url>
+  <url>http://yc.aikeshi.top:40002/repository/maven-public</url>
 </repository>
 ```
 ```xml
