@@ -13,7 +13,7 @@ Maven:
 ```xml
 <dependency>
   <groupId>cn.xiaopangxie732</groupId>
-  <artifactId>mojang_api</artifactId>
+  <artifactId>mojang-api</artifactId>
   <version>0.0.1</version>
 </dependency>
 ```
