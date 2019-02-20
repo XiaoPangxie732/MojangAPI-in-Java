@@ -23,8 +23,7 @@ Javadoc: [Click here](http://yc.aikeshi.top:30003/xiaopangxie732/javadoc/mojang-
 ## Usage:      
 To check API server status:
 ```java
-MojangAPI api = new MojangAPI(); //Create base MojangAPI
-Status stat = api.createStatus(); //Create Status class
-stat.getStatus(StatusServer.SESSIONSERVER_MOJANG_COM); //To get sessionserver.mojang.com status
+Status stat = new Status(); //Create Status class
+stat.getStatus(StatusServer.AUTHSERVER_MOJANG_COM); //To get sessionserver.mojang.com status
 ```
 My English is not very good, maybe some places are wrong:).(from translate.google.com)
