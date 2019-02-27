@@ -26,4 +26,5 @@ To check API server status:
 Status stat = new Status(); //Create Status class
 stat.getStatus(StatusServer.AUTHSERVER_MOJANG_COM); //To get sessionserver.mojang.com status
 ```
+<hr>
 My English is not very good, maybe some places are wrong:).(from translate.google.com)
