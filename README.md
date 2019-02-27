@@ -18,7 +18,7 @@ Maven:
 </dependency>
 ```
   
-Jar file download: [Click here](http://yc.aikeshi.top:30003/xiaopangxie732/downloads/java-jar/mojang-api-java.jar)  
+Jar file download: Please download file at [GitHub releases](https://github.com/XiaoPangxie732/MojangAPI-in-Java/releases/tag/0.0.2)  
 Javadoc: [Click here](http://yc.aikeshi.top:30003/xiaopangxie732/javadoc/mojang-api/0.0.1)
 ## Usage:      
 To check API server status:
