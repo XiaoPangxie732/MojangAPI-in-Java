@@ -4,13 +4,12 @@ import java.util.Properties;
 
 import com.google.gson.Gson;
 
-import cn.xiaopangxie732.mojang_api.exceptions.InvalidServerException;
 import cn.xiaopangxie732.mojang_api.status.StatusServer;
 import cn.xiaopangxie732.mojang_api.status.StatusType;
 import cn.xiaopangxie732.mojang_api.util.Net;
 
 /**
- * Use this class to check Mojang's server status
+ * Used to check the Mojang's servers status.
  * @author XiaoPangxie732
  */
 public class Status {
@@ -21,13 +20,14 @@ public class Status {
 		response = Net.getConnection(url);
 	}
 	/**
-	 * To check server status
-	 * @throws InvalidServerException When the server is invalid or <code>null</code>.
+	 * To check server status.
+	 * @throws NullPointerException When the server is <code>null</code>.
 	 * @param server Which server needs to check the status.
 	 * @return The status of this server.
+	 * @author XiaoPangxie732
 	 */
-	public StatusType getStatus(StatusServer server) throws InvalidServerException {
-		if(server == null) throw new InvalidServerException("null");
+	public StatusType getStatus(StatusServer server) throws NullPointerException {
+		if(server == null) throw new NullPointerException("The server is null");
 		Properties[] result = json.fromJson(response, Properties[].class);
 		String value = result[server.ordinal()].getProperty(server.toString());
 		switch (value) {
@@ -41,9 +41,10 @@ public class Status {
 		return StatusType.COULD_NOT_CONNECT;
 	}
 	/**
-	 * To flush Mojang's server status.
+	 * To fresh Mojang's servers status.
+	 * @author XiaoPangxie732
 	 */
-	public void flush() {
+	public void fresh() {
 		response = Net.getConnection(url);
 	}
 }

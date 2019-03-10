@@ -1,7 +1,7 @@
 package cn.xiaopangxie732.mojang_api.status;
 
 /**
- * This class lists all status type.
+ * List all status type.
  * @author XiaoPangxie732
  */
 public enum StatusType {
@@ -11,12 +11,12 @@ public enum StatusType {
 	COULD_NOT_CONNECT;
 
 	/**
-	 * The StatusType toString() method.
+	 * Let enum to string.
 	 * @return E.g GREEN toString() is green.
 	 * @author XiaoPangxie732
 	 */
 	@Override
 	public String toString() {
-		return name().toLowerCase();
+		return name().toLowerCase().replace("_", " ");
 	}
 }

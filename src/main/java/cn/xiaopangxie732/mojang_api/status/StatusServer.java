@@ -15,7 +15,7 @@ public enum StatusServer {
 	MOJANG_COM;
 
 	/**
-	 * The toString() method of this class.<br>
+	 * Let enum to string.<br>
 	 * @return E.g MINECRAFT_NET toString() is minecraft.net
 	 * @author XiaoPangxie732
 	 */
