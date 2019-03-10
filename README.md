@@ -20,11 +20,13 @@ Maven:
   
 Jar file download: Please download file at [GitHub releases](https://github.com/XiaoPangxie732/MojangAPI-in-Java/releases/tag/0.0.2)  
 Javadoc: [Click here](http://yc.aikeshi.top:30003/xiaopangxie732/javadoc/mojang-api/0.0.1)
-## Usage:      
-To check API server status:
-```java
-Status stat = new Status(); //Create Status class
-stat.getStatus(StatusServer.AUTHSERVER_MOJANG_COM); //To get sessionserver.mojang.com status
+## How to build(from source):      
+1.Install Maven.
+2.cd to that directory.
+3.Run command in the cmd.
+```batch
+mvn clean install
 ```
+4.When build complete, files are all in target folder
 <hr>
 My English is not very good, maybe some places are wrong:).(from translate.google.com)
