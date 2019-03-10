@@ -2,7 +2,7 @@
   <modelVersion>4.0.0</modelVersion>
   <groupId>cn.xiaopangxie732</groupId>
   <artifactId>mojang-api</artifactId>
-  <version>0.0.1</version>
+  <version>0.0.3</version>
   <name>Mojang Public API in Java</name>
   <description>Mojang Public API Java implementation</description>
   <url>https://github.com/XiaoPangxie732/MojangAPI-in-Java</url>
@@ -31,6 +31,48 @@
             	<show>private</show>
             	<locale>en_US</locale>
             </configuration>
+            <executions>
+				<execution>
+					<id>generate-javadoc</id>
+					<phase>install</phase>
+					<goals>
+						<goal>jar</goal>
+					</goals>
+				</execution>
+			</executions>
+  		</plugin>
+		<plugin>
+  			<groupId>org.apache.maven.plugins</groupId>
+            <artifactId>maven-assembly-plugin</artifactId>
+            <version>3.1.1</version>
+            <configuration>
+            	<descriptorRefs>
+					<descriptorRef>jar-with-dependencies</descriptorRef>
+				</descriptorRefs>
+            </configuration>
+			<executions>
+				<execution>
+					<id>make-assembly</id>
+					<phase>install</phase>
+					<goals>
+						<goal>single</goal>
+					</goals>
+				</execution>
+			</executions>
+  		</plugin>
+  		<plugin>
+  			<groupId>org.apache.maven.plugins</groupId>
+            <artifactId>maven-source-plugin</artifactId>
+            <version>3.0.1</version>
+			<executions>
+				<execution>
+					<id>generate-source</id>
+					<phase>install</phase>
+					<goals>
+						<goal>jar</goal>
+					</goals>
+				</execution>
+			</executions>
   		</plugin>
   	</plugins>
   </build>
