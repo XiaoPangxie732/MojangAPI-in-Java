@@ -9,7 +9,7 @@ import cn.xiaopangxie732.mojang_api.exceptions.UsernameOrTimestampInvalidExcepti
 import cn.xiaopangxie732.mojang_api.util.Net;
 
 /**
- * To get UUID of username.
+ * To get UUID of username(playername).
  * @author XiaoPangxie732
  */
 public class UserName {
@@ -18,7 +18,7 @@ public class UserName {
 	private static Gson json = new Gson();
 
 	/**
-	 * Get the UUID of this player name at a time.
+	 * Get the UUID of this playername at a time.
 	 * @param username The playername needs to get UUID.
 	 * @param timestamp A UNIX timestamp (without milliseconds).
 	 * @return The UUID of the name at the timestamp provided.
@@ -42,7 +42,7 @@ public class UserName {
 	}
 
 	/**
-	 * Get the UUID of this player name at now.
+	 * Get the UUID of this playername at now.
 	 * @param username The playername needs to get UUID.
 	 * @return The UUID of the name at now.
 	 * @throws UsernameOrTimestampInvalidException When the username is invalid.
@@ -62,7 +62,7 @@ public class UserName {
 	}
 
 	/**
-	 * Get the UUID of this player name at original time (timestamp=0).
+	 * Get the UUID of this playername at original time (timestamp=0).
 	 * @param username The playername needs to get UUID.
 	 * @return The UUID of the name at the original.
 	 * @throws UsernameOrTimestampInvalidException When the username is invalid or playername wasn't change at least once.
@@ -73,6 +73,13 @@ public class UserName {
 		return UUIDAtTime(username, 0);
 	}
 
+	/**
+	 * Get the UUID of the playername(s).
+	 * @param usernames The playername(s) needs to get UUID.
+	 * @return The UUID(s) of the playername(s).
+	 * @throws IllegalArgumentException When the request names reached more than 100.
+	 * @throws IllegalArgumentException when any of the usernames is <code>null</code> or <code>""</code>.
+	 */
 	public static String UUIDOfNames(String... usernames) throws IllegalArgumentException {
 		if(usernames.length > 100) throw new IllegalArgumentException("Too more names! (" + usernames.length + "/100)");
 		String response = Net.postConnection("https://api.mojang.com/profiles/minecraft", "application/json", json.toJson(usernames));
