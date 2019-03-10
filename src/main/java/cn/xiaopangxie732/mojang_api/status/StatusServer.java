@@ -2,6 +2,7 @@ package cn.xiaopangxie732.mojang_api.status;
 
 /**
  * This class lists all the servers that can check the status.
+ * @since 0.0.1
  * @author XiaoPangxie732
  */
 public enum StatusServer {

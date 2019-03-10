@@ -24,6 +24,7 @@ public class Status {
 	 * @throws NullPointerException When the server is <code>null</code>.
 	 * @param server Which server needs to check the status.
 	 * @return The status of this server.
+	 * @since 0.0.1
 	 * @author XiaoPangxie732
 	 */
 	public StatusType getStatus(StatusServer server) throws NullPointerException {
@@ -42,6 +43,7 @@ public class Status {
 	}
 	/**
 	 * To fresh Mojang's servers status.
+	 * @since 0.0.2
 	 * @author XiaoPangxie732
 	 */
 	public void fresh() {

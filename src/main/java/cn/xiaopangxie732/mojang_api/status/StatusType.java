@@ -2,6 +2,7 @@ package cn.xiaopangxie732.mojang_api.status;
 
 /**
  * List all status type.
+ * @since 0.0.1
  * @author XiaoPangxie732
  */
 public enum StatusType {

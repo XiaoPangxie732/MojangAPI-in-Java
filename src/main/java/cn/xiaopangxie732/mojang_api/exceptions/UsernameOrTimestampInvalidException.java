@@ -2,6 +2,7 @@ package cn.xiaopangxie732.mojang_api.exceptions;
 
 /**
  * Throw when the user name on that timestamp has not changed, or the username is invalid.
+ * @since 0.0.3
  * @author XiaoPangxie732
  */
 public class UsernameOrTimestampInvalidException extends RuntimeException {
