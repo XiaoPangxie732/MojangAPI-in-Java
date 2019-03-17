@@ -18,7 +18,7 @@ public class UserName {
 	private static Gson json = new Gson();
 
 	/**
-	 * Get the UUID of this playername at a time.
+	 * Get the UUID of this playername at a timestamp(requires playername change at least once).
 	 * @param username The playername needs to get UUID.
 	 * @param timestamp A UNIX timestamp (without milliseconds).
 	 * @return The UUID of the name at the timestamp provided.
@@ -62,7 +62,8 @@ public class UserName {
 	}
 
 	/**
-	 * Get the UUID of this playername at original time (timestamp=0).
+	 * Get the UUID of this playername at original time (timestamp=0).<br>
+	 * This requires playername change at least once.
 	 * @param username The playername needs to get UUID.
 	 * @return The UUID of the name at the original.
 	 * @throws UsernameOrTimestampInvalidException When the username is invalid or playername wasn't change at least once.
@@ -89,10 +90,10 @@ public class UserName {
 		} catch (JsonSyntaxException e) {
 			throw new IllegalArgumentException(json.fromJson(response, Properties.class).getProperty("errorMessage"));
 		}
-		String result = "";
+		StringBuilder result = new StringBuilder();
 		for(Properties output : names) {
-			result += output.getProperty("name") + "=" + output.getProperty("id") + "\n";
+			result.append(output.getProperty("name") + "=" + output.getProperty("id") + "\n");
 		}
-		return result;
+		return result.toString();
 	}
 }
