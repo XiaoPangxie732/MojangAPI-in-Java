@@ -1,13 +1,14 @@
 package cn.xiaopangxie732.mojang_api;
 
-import java.util.HashMap;
-import java.util.Properties;
-import com.google.gson.Gson;
-
 import cn.xiaopangxie732.mojang_api.util.Net;
+import com.google.gson.JsonArray;
+import com.google.gson.JsonObject;
+import com.google.gson.JsonParser;
+
+import java.util.Properties;
 
 /**
- * Used to check the Mojang's servers status.
+ * Used to check the Mojang servers status.
  * @author XiaoPangxie732
  */
 public class Status {
@@ -30,6 +31,7 @@ public class Status {
 		/**
 		 * Let enum to string.<br>
 		 * @return The lower case of enum name.
+		 * @since 0.0.1
 		 * @author XiaoPangxie732
 		 */
 		@Override
@@ -52,6 +54,7 @@ public class Status {
 		/**
 		 * Let enum to string.
 		 * @return The lower case of enum name.
+		 * @since 0.0.1
 		 * @author XiaoPangxie732
 		 */
 		@Override
@@ -62,10 +65,10 @@ public class Status {
 
 	private final String url = "https://status.mojang.com/check";
 	private String response;
-	private Gson json = new Gson();
 
 	/**
 	 * Construct a <code>Status</code> class.
+	 * @since 0.0.1
 	 */
 	public Status() {
 		response = Net.getConnection(url);
@@ -81,19 +84,21 @@ public class Status {
 	 */
 	public StatusType getStatus(StatusServer server) throws NullPointerException {
 		if(server == null) throw new NullPointerException("The server is null");
-		Properties[] parr = json.fromJson(response, Properties[].class);
-		HashMap<String, String> result = new HashMap<>();
-		for(Properties p : parr) {
-			result.put((String)p.keySet().toArray()[0], p.getProperty((String)p.keySet().toArray()[0]));
+		JsonArray array = new JsonParser().parse(response).getAsJsonArray();
+		Properties result = new Properties();
+		for(int var = 0;var < array.size(); ++var) {
+			JsonObject object = array.get(var).getAsJsonObject();
+			Object[] key = object.keySet().toArray();
+			result.setProperty((String)key[0], object.get(key[0].toString()).getAsString());
 		}
-		String value = result.get(server.toString());
+		String value = result.getProperty(server.toString());
 		switch (value) {
-		case "green":
-			return StatusType.GREEN;
-		case "yellow":
-			return StatusType.YELLOW;
-		case "red":
-			return StatusType.RED;
+			case "green":
+				return StatusType.GREEN;
+			case "yellow":
+				return StatusType.YELLOW;
+			case "red":
+				return StatusType.RED;
 		}
 		return StatusType.ERROR_TO_CONNECT;
 	}
