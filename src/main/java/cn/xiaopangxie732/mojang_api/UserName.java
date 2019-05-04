@@ -1,15 +1,20 @@
 package cn.xiaopangxie732.mojang_api;
 
-import java.util.Properties;
-
-import com.google.gson.Gson;
-import com.google.gson.JsonSyntaxException;
-
 import cn.xiaopangxie732.mojang_api.exceptions.UsernameOrTimestampInvalidException;
 import cn.xiaopangxie732.mojang_api.util.Net;
 
+import java.io.FileWriter;
+import java.io.IOException;
+import java.util.Properties;
+
+import com.google.gson.Gson;
+import com.google.gson.JsonArray;
+import com.google.gson.JsonElement;
+import com.google.gson.JsonObject;
+import com.google.gson.JsonParser;
+
 /**
- * To get UUID of username(playername).
+ * Used for username(playername) operating.
  * @author XiaoPangxie732
  */
 public class UserName {
@@ -29,7 +34,7 @@ public class UserName {
 	 */
 	public static String UUIDAtTime(String username, long timestamp) throws UsernameOrTimestampInvalidException, IllegalArgumentException {
 		String furl = url + username + "?at=" + timestamp;
-		String response = null;
+		String response;
 		try {
 			response = Net.getConnection(furl);
 		} catch(IllegalArgumentException ex) {
@@ -57,8 +62,7 @@ public class UserName {
 		} catch (IllegalArgumentException e) {
 			throw new UsernameOrTimestampInvalidException("Username \"" + username + "\" is invalid");
 		}
-		Properties result = json.fromJson(response, Properties.class);
-		return result.getProperty("id");
+		return json.fromJson(response, Properties.class).getProperty("id");
 	}
 
 	/**
@@ -75,25 +79,51 @@ public class UserName {
 	}
 
 	/**
-	 * Get the UUID of the playername(s).
+	 * Get the UUID of the playername(s).<br>
+	 * This will not output the player that non-existing.
 	 * @param usernames The playername(s) needs to get UUID.
-	 * @return The UUID(s) of the playername(s).
+	 * @param store To store the output.
+	 * @return The UUID(s) of the playername(s).<br>Return as <code>Properties</code> format.
+	 * @throws IllegalArgumentException When the request names reached more than 100.
+	 * @throws IllegalArgumentException when any of the usernames is <code>null</code> or <code>""</code>.
+	 */
+	public static String UUIDOfNames(boolean store, String... usernames) throws IllegalArgumentException {
+		if(usernames.length > 100) throw new IllegalArgumentException("Too more names! (" + usernames.length + "/100)");
+		String response = Net.postConnection("https://api.mojang.com/profiles/minecraft", "application/json", json.toJson(usernames));
+		JsonElement element = new JsonParser().parse(response);
+		if(!element.isJsonArray())
+			throw new IllegalArgumentException(json.fromJson(response, Properties.class).getProperty("errorMessage"));
+		JsonArray array = element.getAsJsonArray();
+		StringBuilder result = new StringBuilder();
+		Properties data = new Properties();
+		for(int var = 0; var < array.size(); ++var) {
+			JsonObject object = array.get(var).getAsJsonObject();
+			result.append(object.get("name").getAsString() + "=" + object.get("id").getAsString() + "\n");
+			data.setProperty(object.get("name").getAsString(), object.get("id").getAsString());
+		}
+		if(store) {
+			try {
+				data.store(new FileWriter(System.getProperty("user.home") + "\\Desktop\\UUIDOfNames.properties"),
+						"The UUID(s) output.\nMojangAPI-in-Java made by XiaoPangxie732.\nhttps://github.com/XiaoPangxie732/MojangAPI-in-Java");
+			} catch (IOException e) {
+				System.out.println("File store failed!");
+				e.printStackTrace();
+				return String.valueOf(result);
+			}
+			System.out.println("File store complete.\nFile stored at desktop.(UUIDOfNames.properties)");
+		}
+		return String.valueOf(result);
+	}
+
+	/**
+	 * Get the UUID of the playername(s).<br>
+	 * This will not output the player that non-existing.
+	 * @param usernames The playername(s) needs to get UUID.
+	 * @return The UUID(s) of the playername(s).<br>Output as <code>Properties</code> format.
 	 * @throws IllegalArgumentException When the request names reached more than 100.
 	 * @throws IllegalArgumentException when any of the usernames is <code>null</code> or <code>""</code>.
 	 */
 	public static String UUIDOfNames(String... usernames) throws IllegalArgumentException {
-		if(usernames.length > 100) throw new IllegalArgumentException("Too more names! (" + usernames.length + "/100)");
-		String response = Net.postConnection("https://api.mojang.com/profiles/minecraft", "application/json", json.toJson(usernames));
-		Properties[] names = null;
-		try {
-			names = json.fromJson(response, Properties[].class);
-		} catch (JsonSyntaxException e) {
-			throw new IllegalArgumentException(json.fromJson(response, Properties.class).getProperty("errorMessage"));
-		}
-		StringBuilder result = new StringBuilder();
-		for(Properties output : names) {
-			result.append(output.getProperty("name") + "=" + output.getProperty("id") + "\n");
-		}
-		return result.toString();
+		return UUIDOfNames(false, usernames);
 	}
 }
