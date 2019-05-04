@@ -14,12 +14,12 @@ Maven:
 <dependency>
   <groupId>cn.xiaopangxie732</groupId>
   <artifactId>mojang-api</artifactId>
-  <version>0.0.3</version>
+  <version>0.0.4</version>
 </dependency>
 ```
   
 Jar file download: Please download file at [GitHub releases](https://github.com/XiaoPangxie732/MojangAPI-in-Java/releases/latest)  
-Javadoc: [Click here](http://yc.aikeshi.top:30003/xiaopangxie732/javadoc/mojang-api/0.0.1)
+Javadoc: [Click here](https://maxpixel.cn:20443/xiaopangxie732/javadoc/mojang-api/0.0.4/)
 ## How to build(from source):      
 1.Install Maven.  
 2.cd to that directory.  
