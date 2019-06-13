@@ -1,3 +1,20 @@
+/*
+ *  MojangAPI-in-Java--Mojang Public API Java implementation.
+ *  Copyright (C) 2019  XiaoPangxie732
+ * 
+ *  This program is free software: you can redistribute it and/or modify
+ *  it under the terms of the GNU General Public License as published by
+ *  the Free Software Foundation, either version 3 of the License, or
+ *  (at your option) any later version.
+ * 
+ *  This program is distributed in the hope that it will be useful,
+ *  but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ *  GNU General Public License for more details.
+ * 
+ *  You should have received a copy of the GNU General Public License
+ *  along with this program.  If not, see <https://www.gnu.org/licenses/>.
+ */
 package cn.xiaopangxie732.mojang_api;
 
 import com.google.gson.JsonArray;
@@ -18,7 +35,7 @@ import java.util.Properties;
 public class Status {
 
 	/**
-	 * Lists all the servers that can check the status.
+	 * Lists all the servers.
 	 * @since 0.0.1
 	 * @author XiaoPangxie732
 	 */
@@ -56,12 +73,6 @@ public class Status {
 		 */
 		MOJANG_COM;
 
-		/**
-		 * {@code toString} method.
-		 * @return The lower case and replace "_" to the " " enum name.
-		 * @since 0.0.1
-		 * @author XiaoPangxie732
-		 */
 		@Override
 		public String toString() {
 			return name().toLowerCase().replace("_", ".");
@@ -87,12 +98,6 @@ public class Status {
 		 */
 		RED;
 
-		/**
-		 * {@code toString} method.
-		 * @return The lower case of enum name.
-		 * @since 0.0.1
-		 * @author XiaoPangxie732
-		 */
 		@Override
 		public String toString() {
 			return name().toLowerCase().replace("_", " ");
@@ -142,7 +147,7 @@ public class Status {
 	}
 
 	/**
-	 * To check server status and list them.<br>
+	 * To check server status and list them.
 	 * @param store Whether to store the output.
 	 * @return The all server status.<br>Return as <code>Properties</code> format.
 	 * @since 0.0.4
@@ -183,11 +188,11 @@ public class Status {
 	}
 
 	/**
-	 * To fresh Mojang servers status.
+	 * To validate servers status.
 	 * @since 0.0.2
 	 * @author XiaoPangxie732
 	 */
-	public void fresh() {
+	public void validate() {
 		response = Net.getConnection(url);
 	}
 }

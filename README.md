@@ -24,4 +24,4 @@ Javadoc: [Click here](https://maxpixel.cn:20443/xiaopangxie732/projects/mojang-a
 1.Install Maven.  
 2.cd to source directory.  
 3.Run <code>mvn clean install</code>  
-4.When build complete, files are all in target folder
+4.When build complete, files are all in target folder. 

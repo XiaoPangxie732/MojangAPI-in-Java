@@ -1,6 +1,22 @@
+/*
+ *  MojangAPI-in-Java--Mojang Public API Java implementation.
+ *  Copyright (C) 2019  XiaoPangxie732
+ * 
+ *  This program is free software: you can redistribute it and/or modify
+ *  it under the terms of the GNU General Public License as published by
+ *  the Free Software Foundation, either version 3 of the License, or
+ *  (at your option) any later version.
+ * 
+ *  This program is distributed in the hope that it will be useful,
+ *  but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ *  GNU General Public License for more details.
+ * 
+ *  You should have received a copy of the GNU General Public License
+ *  along with this program.  If not, see <https://www.gnu.org/licenses/>.
+ */
 package cn.xiaopangxie732.mojang_api;
 
-import cn.xiaopangxie732.mojang_api.exceptions.UsernameOrTimestampInvalidException;
 import cn.xiaopangxie732.mojang_api.util.Net;
 
 import java.io.FileWriter;
@@ -19,7 +35,7 @@ import com.google.gson.JsonParser;
  */
 public class UserName {
 
-	private static String url = "https://api.mojang.com/users/profiles/minecraft/";
+	private static final String url = "https://api.mojang.com/users/profiles/minecraft/";
 	private static Gson json = new Gson();
 
 	/**
@@ -28,20 +44,20 @@ public class UserName {
 	 * @param timestamp A UNIX timestamp (without milliseconds).
 	 * @return The UUID of the name at the timestamp provided.
 	 * @throws IllegalArgumentException When the timestamp is invalid.
-	 * @throws UsernameOrTimestampInvalidException When the username is invalid or the timestamp has some error(or playername wasn't change at least once).
+	 * @throws IllegalArgumentException When the username is invalid or the timestamp has some error(or playername wasn't change at least once).
 	 * @since 0.0.3
 	 * @author XiaoPangxie732
 	 */
-	public static String UUIDAtTime(String username, long timestamp) throws UsernameOrTimestampInvalidException, IllegalArgumentException {
+	public static String UUIDAtTime(String username, long timestamp) throws IllegalArgumentException {
 		String furl = url + username + "?at=" + timestamp;
 		String response;
 		try {
 			response = Net.getConnection(furl);
 		} catch(IllegalArgumentException ex) {
-			throw new UsernameOrTimestampInvalidException("Username \"" + username + "\" is invalid or on timestamp \"" + Long.toString(timestamp).replace("0", "Original") + "\" the username wasn't change.");
+			throw new IllegalArgumentException("Username \"" + username + "\" is invalid or on timestamp \"" + Long.toString(timestamp).replace("0", "Original") + "\" the username wasn't change.");
 		}
 		Properties result = json.fromJson(response, Properties.class);
-		if(!result.getProperty("error", "noError").equals("noError"))
+		if(result.getProperty("error", "noError").equals("error"))
 			throw new IllegalArgumentException(result.getProperty("errorMessage"));
 		return result.getProperty("id");
 	}
@@ -54,13 +70,13 @@ public class UserName {
 	 * @since 0.0.3
 	 * @author XiaoPangxie732
 	 */
-	public static String UUIDAtNow(String username) throws UsernameOrTimestampInvalidException {
+	public static String UUIDAtNow(String username) throws IllegalArgumentException {
 		String furl = url + username;
 		String response;
 		try {
 			response = Net.getConnection(furl);
 		} catch (IllegalArgumentException e) {
-			throw new UsernameOrTimestampInvalidException("Username \"" + username + "\" is invalid");
+			throw new IllegalArgumentException("Username \"" + username + "\" is invalid");
 		}
 		return json.fromJson(response, Properties.class).getProperty("id");
 	}
@@ -74,7 +90,7 @@ public class UserName {
 	 * @since 0.0.3
 	 * @author XiaoPangxie732
 	 */
-	public static String UUIDAtOriginal(String username) throws UsernameOrTimestampInvalidException{
+	public static String UUIDAtOriginal(String username) throws IllegalArgumentException {
 		return UUIDAtTime(username, 0);
 	}
 
@@ -94,7 +110,7 @@ public class UserName {
 		if(!element.isJsonArray())
 			throw new IllegalArgumentException(json.fromJson(response, Properties.class).getProperty("errorMessage"));
 		JsonArray array = element.getAsJsonArray();
-		StringBuilder result = new StringBuilder();
+		StringBuffer result = new StringBuffer();
 		Properties data = new Properties();
 		for(int var = 0; var < array.size(); ++var) {
 			JsonObject object = array.get(var).getAsJsonObject();
