@@ -17,5 +17,6 @@
  */
 /**
  * The utilities package of MojangAPI-in-Java.
+ * @since 0.0.2
  */
 package cn.xiaopangxie732.mojang_api.util;

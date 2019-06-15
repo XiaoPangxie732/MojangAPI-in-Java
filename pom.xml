@@ -2,7 +2,7 @@
   <modelVersion>4.0.0</modelVersion>
   <groupId>cn.xiaopangxie732</groupId>
   <artifactId>mojang-api</artifactId>
-  <version>0.0.4</version>
+  <version>0.0.5</version>
   <name>Mojang Public API in Java</name>
   <description>Mojang Public API Java implementation</description>
   <url>https://github.com/XiaoPangxie732/MojangAPI-in-Java</url>

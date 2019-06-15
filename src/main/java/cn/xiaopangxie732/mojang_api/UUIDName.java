@@ -30,15 +30,17 @@ import java.util.Date;
 import javax.imageio.ImageIO;
 
 /**
- * Used for UUID operating.
+ * The class for operating UUID.
  * @author XiaoPangxie732
+ * @since 0.0.4
  */
 public class UUIDName {
 
     /**
-     * To get UUID's name history.
+     * Get name history.
      * @param uuid The player's UUID. can be get be using {@link UserName#UUIDAtNow(String)}
      * @return The name history of the UUID.
+     * @since 0.0.4
      */
     public static String nameHistory(String uuid) {
         String url = "https://api.mojang.com/user/profiles/" + uuid + "/names";
@@ -51,9 +53,10 @@ public class UUIDName {
         return result.toString();
     }
     /**
-     * To get this UUID's skin URL.
+     * Get skin URL.
      * @param uuid The UUID of player. can be get be using {@link UserName#UUIDAtNow(String)}
      * @return The skin URL of given UUID.
+     * @since 0.0.5
      */
     public static String getSkinURL(String uuid) {
     	return new JsonParser().parse(new String(Base64.getDecoder().decode(new JsonParser()
@@ -62,7 +65,7 @@ public class UUIDName {
     			.get("textures").getAsJsonObject().get("SKIN").getAsJsonObject().get("url").getAsString();
     }
     /**
-     * Store this UUID's skin png to desktop.
+     * Store skin image to desktop.
      * @param uuid The UUID of player. can be get be using {@link UserName#UUIDAtNow(String)}
      */
     public static void storeSkinImageToDesktop(String uuid) {

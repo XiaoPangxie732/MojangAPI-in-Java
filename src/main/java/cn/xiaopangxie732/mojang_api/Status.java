@@ -28,7 +28,7 @@ import java.io.IOException;
 import java.util.Properties;
 
 /**
- * To check the status of servers.
+ * Check the status of servers.
  * @author XiaoPangxie732
  * @since 0.0.1
  */

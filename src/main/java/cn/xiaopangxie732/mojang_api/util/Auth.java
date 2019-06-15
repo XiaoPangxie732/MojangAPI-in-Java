@@ -27,7 +27,14 @@ import com.google.gson.Gson;
 import com.google.gson.JsonParser;
 
 public class Auth {
-	public static String getAccessToken(String email, String password) {
+	/**
+	 * Get the access token of the account.
+	 * @param email email of the account.
+	 * @param password password of the account.
+	 * @throws IllegalStateException Throw when authentication error happened.
+	 * @return Access token of the account
+	 */
+	public static String getAccessToken(String email, String password) throws IllegalStateException{
 		return new JsonParser().parse(authConnection(email, password)).getAsJsonObject().get("accessToken").getAsString();
 	}
 	public static String postConnection(String url, String RequestParameters, String accessToken) {

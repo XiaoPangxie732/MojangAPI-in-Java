@@ -30,8 +30,9 @@ import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 
 /**
- * Used for username(playername) operating.
+ * The class for operating username(playername).
  * @author XiaoPangxie732
+ * @since 0.0.3
  */
 public class UserName {
 
@@ -66,7 +67,7 @@ public class UserName {
 	 * Get the UUID of this playername at now.
 	 * @param username The playername needs to get UUID.
 	 * @return The UUID of the name at now.
-	 * @throws UsernameOrTimestampInvalidException When the username is invalid.
+	 * @throws IllegalArgumentException When the username is invalid.
 	 * @since 0.0.3
 	 * @author XiaoPangxie732
 	 */
@@ -86,7 +87,7 @@ public class UserName {
 	 * This requires playername change at least once.
 	 * @param username The playername needs to get UUID.
 	 * @return The UUID of the name at the original.
-	 * @throws UsernameOrTimestampInvalidException When the username is invalid or playername wasn't change at least once.
+	 * @throws IllegalArgumentException When the username is invalid or playername wasn't change at least once.
 	 * @since 0.0.3
 	 * @author XiaoPangxie732
 	 */
