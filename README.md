@@ -1,5 +1,6 @@
 # MojangAPI-in-Java
 Mojang Public API Java implementation.  
+Usage is in the [wiki](https://github.com/XiaoPangxie732/MojangAPI-in-Java/wiki)  
 ## It is still in development.
     
 ## Download
