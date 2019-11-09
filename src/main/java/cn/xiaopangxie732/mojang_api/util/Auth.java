@@ -80,7 +80,7 @@ public class Auth {
 			connection.setDoOutput(true);
 			connection.setRequestMethod("POST");
 			connection.setRequestProperty("Content-Type", "application/json");
-			connection.getOutputStream().write(new String("{\"agent\": {\"name\": \"Minecraft\",\"version\": 1},"
+			connection.getOutputStream().write(("{\"agent\": {\"name\": \"Minecraft\",\"version\": 1},"
 					+ "\"username\": \""+email+"\","
 					+ "\"password\": \""+pwd+"\"}").getBytes());
 			connection.connect();

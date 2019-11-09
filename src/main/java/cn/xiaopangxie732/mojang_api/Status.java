@@ -188,11 +188,11 @@ public class Status {
 	}
 
 	/**
-	 * To validate servers status.
+	 * To refresh servers status.
 	 * @since 0.0.2
 	 * @author XiaoPangxie732
 	 */
-	public void validate() {
+	public void refresh() {
 		response = Net.getConnection(url);
 	}
 }

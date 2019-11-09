@@ -49,14 +49,14 @@ public class Skin {
 	 * @throws IllegalStateException Throw when change skin failed.
 	 * @since 0.0.5
 	 */
-	public static void changeSkin(String access_token, boolean isSlim, String uuid, URI uri) {
+	public static void changeSkin(String access_token, boolean isSlim, String uuid, URL url) {
 		try {
 			String response = Auth.postConnection("https://api.mojang.com/user/profile/" + uuid 
 					+"/skin", "model=" + (isSlim ? "slim" : "") + "&url=" + 
-			URLEncoder.encode(uri.toURL().toString(), "UTF-8"), access_token);
+			URLEncoder.encode(url.toString(), "UTF-8"), access_token);
 			if(response != null)
 				throw new IllegalStateException("Failed to change skin");
-		} catch (UnsupportedEncodingException | MalformedURLException e) {
+		} catch (UnsupportedEncodingException e) {
 			e.printStackTrace();
 		}
 	}
@@ -86,16 +86,13 @@ public class Skin {
 			ByteArrayOutputStream baos = new ByteArrayOutputStream();
 			ImageIO.write(ImageIO.read(new File(uri)), new File(uri).getName().split(".")[1], baos);
 			
-			connection.getOutputStream().write(new String(
-					"--TW9qYW5nQVBJLWluLUphdmFfZGF0YXRyYW5zZmVy\r\n" + 
-					"Content-Disposition: form-data; name=\"model\"\r\n" + 
-					"\r\n" + 
-					"\r\n" + 
-					"--TW9qYW5nQVBJLWluLUphdmFfZGF0YXRyYW5zZmVy\r\n" + 
-					"Content-Disposition: form-data; name=\"file\"; filename=\"skin.png\"\r\n" + 
-					"Content-Type: image/png\r\n" + 
-					(isSlim ? "slim" : "") + "\r\n" + 
-					new String(baos.toByteArray()) + "\r\n" + 
+			connection.getOutputStream().write(("--TW9qYW5nQVBJLWluLUphdmFfZGF0YXRyYW5zZmVy\r\n" + 
+					"Content-Disposition: form-data; name=\"model\"\n\n" + 
+					(isSlim ? "slim" : "") + "\n" + 
+					"--TW9qYW5nQVBJLWluLUphdmFfZGF0YXRyYW5zZmVy\n" + 
+					"Content-Disposition: form-data; name=\"file\"; filename=\"skin.png\"\n" + 
+					"Content-Type: image/png\n\n" + 
+					baos.toString() + "\n" + 
 					"--TW9qYW5nQVBJLWluLUphdmFfZGF0YXRyYW5zZmVy--").getBytes("UTF-8"));
 			connection.connect();
 			InputStream in = connection.getInputStream();

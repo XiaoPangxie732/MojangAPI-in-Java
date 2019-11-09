@@ -13,7 +13,7 @@ public class Servers {
 	 * @return String array of all SHA1 hashes.
 	 * @since 0.0.5
 	 */
-	public String[] getBlockedServers() {
+	public static String[] getBlockedServers() {
 		return Net.getConnection("https://sessionserver.mojang.com/blockedservers")
 				.split("\n");
 	}
