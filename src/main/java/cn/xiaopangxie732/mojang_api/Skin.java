@@ -45,7 +45,7 @@ public class Skin {
 	 * @param access_token The access token of UUID's account. can be get by using {@link Auth#getAccessToken(String, String)}
 	 * @param isSlim Skin is slim or not.
 	 * @param uuid UUID of the player. can be get by using {@link UserName#UUIDAtNow(String)}
-	 * @param uri The skin image path. if it is a local file, it needs add a prefix "file:///" and replace "\\" to "/"(Windows).
+	 * @param url The skin image path. if it is a local file, it needs add a prefix "file:///" and replace "\\" to "/"(Windows).
 	 * @throws IllegalStateException Throw when change skin failed.
 	 * @since 0.0.5
 	 */
