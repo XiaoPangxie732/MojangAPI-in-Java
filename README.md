@@ -16,7 +16,7 @@ Maven:
 <dependency>
   <groupId>cn.xiaopangxie732</groupId>
   <artifactId>mojang-api</artifactId>
-  <version>0.0.5</version>
+  <version>0.1</version>
 </dependency>
 ```
   
