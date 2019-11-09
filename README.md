@@ -15,7 +15,7 @@ Maven:
 ```
   
 Jar file download: Please download file at [GitHub releases](https://github.com/XiaoPangxie732/MojangAPI-in-Java/releases/latest)  
-Javadoc: [Click here](https://maxpixel.cn:20443/xiaopangxie732/projects/mojang-api/javadoc/0.0.4/)
+Javadoc: [Click here](https://xiaopangxie732.github.io/MojangAPI-in-Java/index.html)
 ## How to build(from source):      
 1.Install Maven.  
 2.cd to source directory.  
