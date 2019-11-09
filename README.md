@@ -7,12 +7,6 @@ Usage is in the [wiki](https://github.com/XiaoPangxie732/MojangAPI-in-Java/wiki)
 ## Download
 Maven:
 ```xml
-<repository>
-  <id>xiaopangxie732</id>
-  <url>http://repo.xiaopangxie732.cn:30002/repository/maven-public/</url>
-</repository>
-```
-```xml
 <dependency>
   <groupId>cn.xiaopangxie732</groupId>
   <artifactId>mojang-api</artifactId>
