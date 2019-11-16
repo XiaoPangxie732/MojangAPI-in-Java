@@ -2,10 +2,11 @@
 Mojang Public API Java implementation.  
 
 ## Usage
-Usage is in the [wiki](https://github.com/XiaoPangxie732/MojangAPI-in-Java/wiki)    
+Usage is in [Wiki](https://github.com/XiaoPangxie732/MojangAPI-in-Java/wiki)    
 
 ## Download
 Maven:
+Follow [here]() to add repository first.
 ```xml
 <dependency>
   <groupId>cn.xiaopangxie732</groupId>
@@ -17,7 +18,7 @@ Maven:
 Jar file download: Please download file at [GitHub releases](https://github.com/XiaoPangxie732/MojangAPI-in-Java/releases/latest)  
 Javadoc: [Click here](https://xiaopangxie732.github.io/MojangAPI-in-Java/index.html)
 ## How to build(from source):      
-1.Install Maven.  
+1.Install [Maven](https://maven.apache.org/).  
 2.cd to source directory.  
 3.Run <code>mvn clean install</code>  
 4.When build complete, files are all in target folder. 
