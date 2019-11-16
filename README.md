@@ -5,7 +5,7 @@ Mojang Public API Java implementation.
 Usage is in [Wiki](https://github.com/XiaoPangxie732/MojangAPI-in-Java/wiki)    
 
 ## Download
-Maven:
+Maven:  
 Follow [these steps](https://help.github.com/en/github/managing-packages-with-github-packages/configuring-apache-maven-for-use-with-github-packages#installing-a-package) to add repository first.
 ```xml
 <dependency>
