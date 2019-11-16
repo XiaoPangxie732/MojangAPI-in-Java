@@ -23,16 +23,21 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.UnsupportedEncodingException;
 import java.net.HttpURLConnection;
-import java.net.MalformedURLException;
 import java.net.URI;
 import java.net.URL;
 import java.net.URLEncoder;
+import java.util.HashMap;
+import java.util.Objects;
+import java.util.Optional;
 import java.util.Properties;
 
 import javax.imageio.ImageIO;
 import com.google.gson.Gson;
+import com.google.gson.JsonObject;
+import com.google.gson.JsonParser;
 
 import cn.xiaopangxie732.mojang_api.util.Auth;
+import cn.xiaopangxie732.mojang_api.util.Net;
 
 /**
  * The class for operating the skin.
@@ -156,6 +161,37 @@ public class Skin {
 			e.printStackTrace();
 		} finally {
 			connection.disconnect();
+		}
+	}
+	/**
+	 * Used to verify identity when changing skin with untrusted IP.
+	 * @author XiaoPangxie732
+	 * @since 0.1
+	 */
+	public static class SecurityQA {
+		/**
+		 * Check if you need to answer security questions
+		 * @param accesToken Player's access token
+		 * @return true for need and false for not need
+		 * @see Auth#getAccessToken(String, String)
+		 */
+		public static boolean checkNeeded(String accesToken) {
+			return checkNeeded(accesToken, null);
+		}
+		public static boolean checkNeeded(String accessToken, JsonObject error_message) {
+			HashMap<String, String> map = new HashMap<>();
+			map.put("Authorization", "Bearer " + accessToken);
+			String response = Net.getConnection("https://api.mojang.com/user/security/location", map);
+			if(response.length() == 0) 
+				return false;
+			else {
+				if(!response.equalsIgnoreCase("")) 
+					Optional.ofNullable(error_message).ifPresent(obj -> {
+						JsonObject o = JsonParser.parseString(response).getAsJsonObject();
+						o.keySet().forEach(s -> error_message.add(s, o.get(s)));
+					});
+				return true;
+			}
 		}
 	}
 }

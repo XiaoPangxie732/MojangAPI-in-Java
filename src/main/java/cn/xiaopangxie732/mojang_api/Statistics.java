@@ -12,7 +12,7 @@ import cn.xiaopangxie732.mojang_api.util.Net;
  * @since 0.0.5
  */
 public class Statistics {
-	private String response;
+	private JsonObject response;
 	private JsonObject request = new JsonObject();
 	/**
 	 * All valid items.
@@ -47,7 +47,8 @@ public class Statistics {
 	 * @since 0.0.5
 	 */
 	public Statistics get() {
-		response = Net.postConnection("https://api.mojang.com/orders/statistics", "application/json", request.toString());
+		response = JsonParser.parseString(Net.postConnection("https://api.mojang.com/orders/statistics", 
+				"application/json", request.toString())).getAsJsonObject();
 		return this;
 	}
 	/**
@@ -56,7 +57,7 @@ public class Statistics {
 	 * @since 0.0.5
 	 */
 	public int getTotalSales() {
-		return new JsonParser().parse(response).getAsJsonObject().get("total").getAsInt();
+		return response.get("total").getAsInt();
 	}
 	/**
 	 * Get last 24h sale number
@@ -64,7 +65,7 @@ public class Statistics {
 	 * @since 0.0.5
 	 */
 	public int getLast24hSales() {
-		return new JsonParser().parse(response).getAsJsonObject().get("last24h").getAsInt();
+		return response.getAsJsonObject().get("last24h").getAsInt();
 	}
 	/**
 	 * Get sale velocity per seconds.
@@ -72,6 +73,6 @@ public class Statistics {
 	 * @since 0.0.5
 	 */
 	public float getSaleVelocityPerSeconds() {
-		return new JsonParser().parse(response).getAsJsonObject().get("saleVelocityPerSeconds").getAsFloat();
+		return response.getAsJsonObject().get("saleVelocityPerSeconds").getAsFloat();
 	}
 }

@@ -17,31 +17,42 @@
  */
 package cn.xiaopangxie732.mojang_api.util;
 
+import java.io.IOException;
 import java.io.InputStream;
 import java.net.HttpURLConnection;
+import java.util.HashMap;
+import java.util.Optional;
+import java.util.concurrent.atomic.AtomicReference;
 import java.net.URL;
 
 public final class Net {
 	private Net() {}
 
-	public static String getConnection(String url) throws IllegalArgumentException {
+	public static String getConnection(String url, HashMap<String, String> RequestParameters) throws IllegalArgumentException {
 		StringBuffer response = new StringBuffer();
 		HttpURLConnection connection = null;
 		try {
-			connection = (HttpURLConnection)(new URL(url).openConnection());
-			connection.setRequestMethod("GET");
+			connection = (HttpURLConnection)new URL(url).openConnection();
+			AtomicReference<HttpURLConnection> ref = new AtomicReference<>(connection);
+			Optional.ofNullable(RequestParameters).ifPresent(map -> map.forEach((k, v) -> ref.get().setRequestProperty(k, v)));
 			connection.connect();
-			InputStream in = connection.getInputStream();
-			int i;
-			while((i = in.read())!= -1) {
-				response.append((char)i);
+			try(InputStream in = connection.getInputStream()) {
+				for(int i = in.read(); i != -1; i = in.read()) response.append((char)i);
 			}
 		} catch (Exception e) {
-			e.printStackTrace();
+			try(InputStream s = connection.getErrorStream()) {
+				for(int i = s.read(); i != -1; i = s.read()) response.append((char)i);
+			} catch (IOException e1) {
+				e1.printStackTrace();
+			}
+			return response.toString();
 		} finally {
 			connection.disconnect();
 		}
-		return String.valueOf(response);
+		return response.toString();
+	}
+	public static String getConnection(String url) throws IllegalArgumentException {
+		return getConnection(url, null);
 	}
 	public static String postConnection(String url, String ContentType, String RequestParameters) {
 		StringBuffer response = new StringBuffer();
@@ -53,16 +64,19 @@ public final class Net {
 			connection.setRequestProperty("Content-Type", ContentType);
 			connection.getOutputStream().write(RequestParameters.getBytes());
 			connection.connect();
-			InputStream in = connection.getInputStream();
-			int i;
-			while((i = in.read())!= -1) {
-				response.append((char)i);
+			try(InputStream in = connection.getInputStream()) {
+				for(int i = in.read(); i != -1; i = in.read()) response.append((char)i);
 			}
 		} catch (Exception e) {
-			e.printStackTrace();
+			try(InputStream in = connection.getErrorStream()) {
+				for(int i = in.read(); i != -1; i = in.read()) response.append((char)i);
+			} catch (IOException e1) {
+				e1.printStackTrace();
+			}
+			return response.toString();
 		} finally {
 			connection.disconnect();
 		}
-		return String.valueOf(response);
+		return response.toString();
 	}
 }
