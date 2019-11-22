@@ -69,7 +69,7 @@ public class Skin {
 	 * This uploads a skin to Mojang's servers. It also sets the users skin. This works on legacy counts as well.
 	 * @param access_token The access token of an account. can be get by using {@link Auth#getAccessToken(String, String)}
 	 * @param isSlim Skin is slim or not.
-	 * @param UUID of the account. can be get be using {@link UserName#UUIDAtNow(String)}
+	 * @param uuid UUID of the account. can be get be using {@link UserName#UUIDAtNow(String)}
 	 * @param uri The skin image path. if it is a local file, it needs add a prefix "file:///" and replace "\\" to "/"(on Windows).
 	 * @throws IllegalArgumentException When change skin failed.
 	 * @since 0.0.5
@@ -166,7 +166,7 @@ public class Skin {
 	public static class SecurityQA {
 		/**
 		 * Check if you need to answer security questions
-		 * @param accesToken Player's access token
+		 * @param accessToken Player's access token
 		 * @return true for need and false for not need
 		 * @see Auth#getAccessToken(String, String)
 		 * @since 0.1
