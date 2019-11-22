@@ -4,6 +4,7 @@ import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 
+import cn.xiaopangxie732.mojang_api.Status.StatusServer;
 import cn.xiaopangxie732.mojang_api.util.Net;
 
 /**
@@ -12,7 +13,7 @@ import cn.xiaopangxie732.mojang_api.util.Net;
  * @since 0.0.5
  */
 public class Statistics {
-	private String response;
+	private JsonObject response;
 	private JsonObject request = new JsonObject();
 	/**
 	 * All valid items.
@@ -47,7 +48,9 @@ public class Statistics {
 	 * @since 0.0.5
 	 */
 	public Statistics get() {
-		response = Net.postConnection("https://api.mojang.com/orders/statistics", "application/json", request.toString());
+		Status.ensureAvailable(StatusServer.API_MOJANG_COM);
+		response = JsonParser.parseString(Net.postConnection("https://api.mojang.com/orders/statistics", 
+				"application/json", request.toString())).getAsJsonObject();
 		return this;
 	}
 	/**
@@ -55,16 +58,16 @@ public class Statistics {
 	 * @return The total sale number.
 	 * @since 0.0.5
 	 */
-	public int getTotalSales() {
-		return new JsonParser().parse(response).getAsJsonObject().get("total").getAsInt();
+	public int getTotalSaleNumber() {
+		return response.get("total").getAsInt();
 	}
 	/**
 	 * Get last 24h sale number
 	 * @return The last 24h sale number.
 	 * @since 0.0.5
 	 */
-	public int getLast24hSales() {
-		return new JsonParser().parse(response).getAsJsonObject().get("last24h").getAsInt();
+	public int getLast24hSaleNumber() {
+		return response.get("last24h").getAsInt();
 	}
 	/**
 	 * Get sale velocity per seconds.
@@ -72,6 +75,6 @@ public class Statistics {
 	 * @since 0.0.5
 	 */
 	public float getSaleVelocityPerSeconds() {
-		return new JsonParser().parse(response).getAsJsonObject().get("saleVelocityPerSeconds").getAsFloat();
+		return response.get("saleVelocityPerSeconds").getAsFloat();
 	}
 }

@@ -3,7 +3,7 @@
   <groupId>cn.xiaopangxie732</groupId>
   <artifactId>mojang-api</artifactId>
   <version>0.1</version>
-  <name>Mojang Public API in Java</name>
+  <name>MojangAPI in Java</name>
   <description>Mojang Public API Java implementation</description>
   <url>https://github.com/XiaoPangxie732/MojangAPI-in-Java</url>
   <packaging>jar</packaging>
@@ -11,7 +11,7 @@
   	<dependency>
   	  <groupId>com.google.code.gson</groupId>
   	  <artifactId>gson</artifactId>
-  	  <version>2.8.5</version>
+  	  <version>2.8.6</version>
 	</dependency>
   </dependencies>
   <build>
@@ -72,6 +72,13 @@
   		</plugin>
   	</plugins>
   </build>
+  <distributionManagement>
+   <repository>
+     <id>github</id>
+     <name>GitHub OWNER Apache Maven Packages</name>
+     <url>https://maven.pkg.github.com/XiaoPangxie732/MojangAPI-in-Java</url>
+   </repository>
+</distributionManagement>
   <properties>
     <maven.compiler.source>1.8</maven.compiler.source>
     <maven.compiler.target>1.8</maven.compiler.target>

@@ -17,25 +17,27 @@
  */
 package cn.xiaopangxie732.mojang_api;
 
-import com.google.gson.JsonArray;
-import com.google.gson.JsonObject;
+import com.google.gson.JsonElement;
 import com.google.gson.JsonParser;
 
 import cn.xiaopangxie732.mojang_api.util.Net;
+import cn.xiaopangxie732.mojang_api.util.PathUtil;
 
+import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.util.Objects;
 import java.util.Properties;
 
 /**
- * Check the status of servers.
+ * Check status of Mojang servers.
  * @author XiaoPangxie732
  * @since 0.0.1
  */
 public class Status {
 
 	/**
-	 * Lists all the servers.
+	 * Mojang servers.
 	 * @since 0.0.1
 	 * @author XiaoPangxie732
 	 */
@@ -80,7 +82,7 @@ public class Status {
 	}
 
 	/**
-	 * List all status type.
+	 * Status types.
 	 * @since 0.0.1
 	 * @author XiaoPangxie732
 	 */
@@ -94,46 +96,45 @@ public class Status {
 		 */
 		YELLOW,
 		/**
-		 * red(or could not connect)
+		 * red(or could not connect to status server)
 		 */
 		RED;
-
 		@Override
 		public String toString() {
 			return name().toLowerCase().replace("_", " ");
 		}
 	}
 
-	private final String url = "https://status.mojang.com/check";
-	private String response;
-
-	/**
-	 * Construct a <code>Status</code> class.<br>
-	 * To get the servers status.
-	 * @since 0.0.1
+	private static final String url = "https://status.mojang.com/check";
+	private static Properties response;
+	/*
+	 * Used for server status checking in MojangAPI-in-Java
 	 */
-	public Status() {
-		response = Net.getConnection(url);
+	private static Status status = new Status();
+	static void ensureAvailable(StatusServer server) {
+		if(status.getStatus(server) == StatusType.RED) throw new ServiceException("Server service unavailable");
 	}
 
 	/**
-	 * To check server status.
+	 * Construct a <code>Status</code> class.
+	 * @since 0.0.1
+	 */
+	public Status() {
+		if(Objects.isNull(response)) response = new Properties();
+		JsonParser.parseString(Net.getConnection(url)).getAsJsonArray().forEach(element -> element.getAsJsonObject()
+				.entrySet().forEach(entry -> response.setProperty(entry.getKey(), entry.getValue().getAsString())));
+	}
+
+	/**
+	 * Check server status.
 	 * @throws NullPointerException When the server is <code>null</code>.
 	 * @param server The server to check status.
-	 * @return The status of this server.<br>When couldn't connect, it will return {@link StatusType#RED}.
+	 * @return The status of this server.<br>When failed to connect the status server, will return {@link StatusType#RED}.
 	 * @since 0.0.1
 	 * @author XiaoPangxie732
 	 */
 	public StatusType getStatus(StatusServer server) throws NullPointerException {
-		if(server == null) throw new NullPointerException("The server is null");
-		JsonArray array = new JsonParser().parse(response).getAsJsonArray();
-		Properties result = new Properties();
-		for(int var = 0;var < array.size(); ++var) {
-			JsonObject object = array.get(var).getAsJsonObject();
-			String key = object.keySet().iterator().next();
-			result.setProperty(key, object.get(key).getAsString());
-		}
-		String value = result.getProperty(String.valueOf(server));
+		String value = response.getProperty(String.valueOf(Objects.requireNonNull(server, "The server is null")));
 		switch (value) {
 			case "green":
 				return StatusType.GREEN;
@@ -147,52 +148,59 @@ public class Status {
 	}
 
 	/**
-	 * To check server status and list them.
+	 * Check server statuses and list them.
 	 * @param store Whether to store the output.
-	 * @return The all server status.<br>Return as <code>Properties</code> format.
+	 * @return The all server statuses list as <code>Properties</code> format.
 	 * @since 0.0.4
 	 * @author XiaoPangxie732
 	 */
 	public String getAllStatus(boolean store) {
-		JsonArray array = new JsonParser().parse(response).getAsJsonArray();
-		Properties data = new Properties();
-		for(int var = 0;var < array.size(); ++var) {
-			JsonObject object = array.get(var).getAsJsonObject();
-			String key = object.keySet().iterator().next();
-			data.setProperty(key, object.get(key).getAsString());
-		}
-		String returned = String.valueOf(data).replace("{", "").replace("}", "").replace(", ", "\n");
-		if(store) {
-			try {
-				data.store(new FileWriter(System.getProperty("user.home") + "\\Desktop\\ServerStatuses.properties"),
-						"The server statuses output.\nMojangAPI-in-Java made by XiaoPangxie732.\nhttps://github.com/XiaoPangxie732/MojangAPI-in-Java");
-			} catch (IOException e) {
-				System.err.println("File store failed!");
-				System.err.print("Stacktrace: ");
-				e.printStackTrace();
-				return returned;
-			}
-			System.out.println("File store complete.\nFile stored at desktop.(ServerStatuses.properties)");
-		}
-		return returned;
+		StringBuffer buf = new StringBuffer(198);
+		response.forEach((key, value) -> {
+			buf.append(key).append('=').append(value);
+			if(buf.length()<198) buf.append('\n');
+		});
+		if(store) getAllStatus(PathUtil.getDesktop() + "/ServerStatus.properties");
+		return buf.toString();
 	}
 
 	/**
-	 * To check server status and list them.<br>
-	 * @return The all server status.<br>Return as <code>Properties</code> format.
+	 * Check server statuses and list them.<br>
+	 * @return The all server statuses list as <code>Properties</code> format.
 	 * @since 0.0.4
 	 * @author XiaoPangxie732
 	 */
 	public String getAllStatus() {
 		return getAllStatus(false);
 	}
+	
+	/**
+	 * Check server statuses and store them.
+	 * @param path Path to store the output, {@code null} for default path(ServerStatus.properties on desktop)
+	 * @return Store outcome.
+	 * @since 0.1
+	 * @author XiaoPangxie732
+	 */
+	public boolean getAllStatus(String path) {
+		try {
+			response.store(new FileWriter(path),
+				"Server statuses output.\nMojangAPI-in-Java made by XiaoPangxie732.\nhttps://github.com/XiaoPangxie732/MojangAPI-in-Java");
+		} catch (IOException e) {
+			System.err.println("File store failed!");
+			System.err.print("Stacktrace: ");
+			e.printStackTrace();
+			return false;
+		}
+		System.out.println("File store complete.\nFile stored at desktop.(" + new File(path).getName() + ")");
+		return true;
+	}
 
 	/**
-	 * To refresh servers status.
+	 * Refresh server statuses.
 	 * @since 0.0.2
 	 * @author XiaoPangxie732
 	 */
 	public void refresh() {
-		response = Net.getConnection(url);
+		new Status();
 	}
 }

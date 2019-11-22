@@ -17,52 +17,100 @@
  */
 package cn.xiaopangxie732.mojang_api.util;
 
+import java.io.IOException;
 import java.io.InputStream;
 import java.net.HttpURLConnection;
+import java.net.InetSocketAddress;
+import java.net.Proxy;
+import java.util.HashMap;
+import java.util.Optional;
+import java.util.concurrent.atomic.AtomicReference;
 import java.net.URL;
+import java.net.Proxy.Type;
 
 public final class Net {
 	private Net() {}
 
-	public static String getConnection(String url) throws IllegalArgumentException {
+	public static String getConnection(String url, HashMap<String, String> headers) {
 		StringBuffer response = new StringBuffer();
 		HttpURLConnection connection = null;
 		try {
-			connection = (HttpURLConnection)(new URL(url).openConnection());
-			connection.setRequestMethod("GET");
+			connection = (HttpURLConnection)new URL(url).openConnection(
+//					new Proxy(Type.HTTP, new InetSocketAddress(8081))
+					);
+			AtomicReference<HttpURLConnection> ref = new AtomicReference<>(connection);
+			Optional.ofNullable(headers).ifPresent(map -> map.forEach((k, v) -> ref.get().setRequestProperty(k, v)));
 			connection.connect();
-			InputStream in = connection.getInputStream();
-			int i;
-			while((i = in.read())!= -1) {
-				response.append((char)i);
+			try(InputStream in = connection.getInputStream()) {
+				for(int i = in.read(); i != -1; i = in.read()) response.append((char)i);
 			}
 		} catch (Exception e) {
-			e.printStackTrace();
+			try(InputStream s = connection.getErrorStream()) {
+				for(int i = s.read(); i != -1; i = s.read()) response.append((char)i);
+			} catch (IOException e1) {
+				e1.printStackTrace();
+			}
+			return response.toString();
 		} finally {
 			connection.disconnect();
 		}
-		return String.valueOf(response);
+		return response.toString();
+	}
+	public static String getConnection(String url) {
+		return getConnection(url, null);
 	}
 	public static String postConnection(String url, String ContentType, String RequestParameters) {
+		StringBuffer response = new StringBuffer();
+		HttpURLConnection connection = null;
+		try {
+			connection = (HttpURLConnection)new URL(url).openConnection(
+//					new Proxy(Type.HTTP, new InetSocketAddress(8081))
+					);
+			connection.setDoOutput(true);
+			connection.setRequestMethod("POST");
+			connection.setRequestProperty("Content-Type", ContentType);
+			connection.getOutputStream().write(RequestParameters.getBytes());
+			connection.connect();
+			try(InputStream in = connection.getInputStream()) {
+				for(int i = in.read(); i != -1; i = in.read()) response.append((char)i);
+			}
+		} catch (Exception e) {
+			try(InputStream in = connection.getErrorStream()) {
+				for(int i = in.read(); i != -1; i = in.read()) response.append((char)i);
+			} catch (IOException e1) {
+				e1.printStackTrace();
+			}
+			return response.toString();
+		} finally {
+			connection.disconnect();
+		}
+		return response.toString();
+	}
+	public static String postConnection(String url, String ContentType, String RequestParameters, HashMap<String, String> headers) {
 		StringBuffer response = new StringBuffer();
 		HttpURLConnection connection = null;
 		try {
 			connection = (HttpURLConnection)(new URL(url).openConnection());
 			connection.setDoOutput(true);
 			connection.setRequestMethod("POST");
+			AtomicReference<HttpURLConnection> ref = new AtomicReference<>(connection);
+			Optional.ofNullable(headers).ifPresent(map -> map.forEach((k, v) -> ref.get().setRequestProperty(k, v)));
 			connection.setRequestProperty("Content-Type", ContentType);
 			connection.getOutputStream().write(RequestParameters.getBytes());
 			connection.connect();
-			InputStream in = connection.getInputStream();
-			int i;
-			while((i = in.read())!= -1) {
-				response.append((char)i);
+			try(InputStream in = connection.getInputStream()) {
+				for(int i = in.read(); i != -1; i = in.read()) response.append((char)i);
 			}
 		} catch (Exception e) {
-			e.printStackTrace();
+			try(InputStream in = connection.getErrorStream()) {
+				for(int i = in.read(); i != -1; i = in.read()) response.append((char)i);
+			} catch (IOException e1) {
+				e1.printStackTrace();
+			}
+			return response.toString();
 		} finally {
 			connection.disconnect();
 		}
-		return String.valueOf(response);
+		return response.toString();
 	}
 }
