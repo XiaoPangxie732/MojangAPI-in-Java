@@ -17,8 +17,12 @@
  */
 package cn.xiaopangxie732.mojang_api;
 
+import cn.xiaopangxie732.mojang_api.Status.StatusServer;
 import cn.xiaopangxie732.mojang_api.util.Net;
+import cn.xiaopangxie732.mojang_api.util.PathUtil;
+
 import com.google.gson.JsonArray;
+import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 
 import java.io.FileOutputStream;
@@ -30,7 +34,7 @@ import java.util.Date;
 import javax.imageio.ImageIO;
 
 /**
- * The class for operating UUID.
+ * Used for UUID related operations.
  * @author XiaoPangxie732
  * @since 0.0.4
  */
@@ -38,39 +42,87 @@ public class UUIDName {
 
     /**
      * Get name history.
-     * @param uuid The player's UUID. can be get be using {@link UserName#UUIDAtNow(String)}
+     * @param uuid The player's UUID. can be get by using {@link UserName#UUIDAtNow(String)}
      * @return The name history of the UUID.
      * @since 0.0.4
      */
     public static String nameHistory(String uuid) {
-        String url = "https://api.mojang.com/user/profiles/" + uuid + "/names";
-        JsonArray response = new JsonParser().parse(Net.getConnection(url)).getAsJsonArray();
-        StringBuilder result = new StringBuilder("Original=" + response.get(0).getAsJsonObject().get("name").getAsString());
-        for(int var = 1; var < response.size(); ++var) {
-            result.append("\n" + DateFormat.getDateInstance().format(new Date(Long.parseLong(response.get(var).getAsJsonObject().get("changedToAt").getAsString()))) + "="
-                    + response.get(var).getAsJsonObject().get("name").getAsString());
-        }
+    	Status.ensureAvailable(StatusServer.API_MOJANG_COM);
+        JsonArray response = JsonParser.parseString(Net.getConnection(
+        		"https://api.mojang.com/user/profiles/" + uuid + "/names")).getAsJsonArray();
+        StringBuffer result = new StringBuffer();
+        response.forEach(ele -> {
+        	JsonObject obj = ele.getAsJsonObject();
+        	if(obj.has("changedToAt")) 
+        		result.append(DateFormat.getInstance().format(new Date(obj.get("changedToAt").getAsLong())))
+        				.append('=').append(obj.get("name").getAsString());
+        	else result.append("Original=").append(obj.get("name").getAsString());
+        	result.append('\n');
+        });
+        result.setLength(result.length()-1);
+        result.trimToSize();
         return result.toString();
     }
     /**
-     * Get skin URL.
-     * @param uuid The UUID of player. can be get be using {@link UserName#UUIDAtNow(String)}
+     * Get skin URL.<br>
+     * Requires custom skin has been set.
+     * @param uuid The UUID of player. can be get by using {@link UserName#UUIDAtNow(String)}
      * @return The skin URL of given UUID.
+     * @throws IllegalArgumentException If no custom skin has been set.
      * @since 0.0.5
      */
-    public static String getSkinURL(String uuid) {
-    	return new JsonParser().parse(new String(Base64.getDecoder().decode(new JsonParser()
-    			.parse(Net.getConnection("https://sessionserver.mojang.com/session/minecraft/profile/" + uuid))
-    			.getAsJsonObject().get("properties").getAsJsonArray().get(0).getAsJsonObject().get("value").getAsString()))).getAsJsonObject()
-    			.get("textures").getAsJsonObject().get("SKIN").getAsJsonObject().get("url").getAsString();
+    public static String getSkinURL(String uuid) throws IllegalArgumentException {
+    	Status.ensureAvailable(StatusServer.SESSIONSERVER_MOJANG_COM);
+    	JsonObject obj = JsonParser.parseString(new String(Base64.getDecoder().decode(JsonParser.parseString(
+    			Net.getConnection("https://sessionserver.mojang.com/session/minecraft/profile/" + uuid))
+    			.getAsJsonObject().get("properties").getAsJsonArray().get(0).getAsJsonObject().get("value").getAsString())))
+    			.getAsJsonObject().get("textures").getAsJsonObject();
+    	if(!obj.has("SKIN")) throw new IllegalArgumentException("No custom skin has been set");
+    	return obj.get("SKIN").getAsJsonObject().get("url").getAsString();
     }
     /**
-     * Store skin image to desktop.
-     * @param uuid The UUID of player. can be get be using {@link UserName#UUIDAtNow(String)}
+     * Get cape URL.<br>
+     * Requires the account has cape.
+     * @param uuid The UUID of player. can be get by using {@link UserName#UUIDAtNow(String)}
+     * @return The skin URL of given UUID.
+     * @throws IllegalArgumentException If the account has no cape.
+     * @since 0.1
      */
-    public static void storeSkinImageToDesktop(String uuid) {
+    public static String getCapeURL(String uuid) throws IllegalArgumentException {
+    	Status.ensureAvailable(StatusServer.SESSIONSERVER_MOJANG_COM);
+    	JsonObject obj = JsonParser.parseString(new String(Base64.getDecoder().decode(JsonParser.parseString(
+    			Net.getConnection("https://sessionserver.mojang.com/session/minecraft/profile/" + uuid))
+    			.getAsJsonObject().get("properties").getAsJsonArray().get(0).getAsJsonObject().get("value").getAsString())))
+    			.getAsJsonObject().get("textures").getAsJsonObject();
+    	if(!obj.has("CAPE")) throw new IllegalArgumentException("No custom skin has been set");
+    	return obj.get("CAPE").getAsJsonObject().get("url").getAsString();
+    }
+    /**
+     * Store skin image to desktop.<br>
+     * Requires custom skin has been set.
+     * @since 0.0.5
+     * @param uuid The UUID of player. can be get by using {@link UserName#UUIDAtNow(String)}
+     * @throws IllegalArgumentException If no custom skin has been set.
+     */
+    public static void storeSkinImageToDesktop(String uuid) throws IllegalArgumentException {
     	try {
-			ImageIO.createImageOutputStream(new FileOutputStream(System.getProperty("user.home") + "\\Desktop\\Skin.png")).writeBytes(Net.getConnection(getSkinURL(uuid)));
+			ImageIO.createImageOutputStream(new FileOutputStream(PathUtil.getDesktop() + "/Skin.png")).writeBytes(Net.getConnection(getSkinURL(uuid)));
+			System.out.println("File store complete");
+		} catch (IOException e) {
+			System.out.println("File stored failed!");
+			e.printStackTrace();
+		}
+    }
+    /**
+     * Store cape image to desktop.<br>
+     * Requires the account has cape.
+     * @since 0.1
+     * @param uuid The UUID of player. can be get by using {@link UserName#UUIDAtNow(String)}
+     * @throws IllegalArgumentException If the account has no cape.
+     */
+    public static void storeCapeImageToDesktop(String uuid) throws IllegalArgumentException {
+    	try {
+			ImageIO.createImageOutputStream(new FileOutputStream(PathUtil.getDesktop() + "/Cape.png")).writeBytes(Net.getConnection(getCapeURL(uuid)));
 			System.out.println("File store complete");
 		} catch (IOException e) {
 			System.out.println("File stored failed!");

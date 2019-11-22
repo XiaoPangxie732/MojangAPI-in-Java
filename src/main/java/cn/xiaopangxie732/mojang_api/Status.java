@@ -17,6 +17,7 @@
  */
 package cn.xiaopangxie732.mojang_api;
 
+import com.google.gson.JsonElement;
 import com.google.gson.JsonParser;
 
 import cn.xiaopangxie732.mojang_api.util.Net;
@@ -95,7 +96,7 @@ public class Status {
 		 */
 		YELLOW,
 		/**
-		 * red(could not connect)
+		 * red(or could not connect to status server)
 		 */
 		RED;
 		@Override
@@ -106,13 +107,20 @@ public class Status {
 
 	private static final String url = "https://status.mojang.com/check";
 	private static Properties response;
+	/*
+	 * Used for server status checking in MojangAPI-in-Java
+	 */
+	private static Status status = new Status();
+	static void ensureAvailable(StatusServer server) {
+		if(status.getStatus(server) == StatusType.RED) throw new ServiceException("Server service unavailable");
+	}
 
 	/**
 	 * Construct a <code>Status</code> class.
 	 * @since 0.0.1
 	 */
 	public Status() {
-		response = new Properties();
+		if(Objects.isNull(response)) response = new Properties();
 		JsonParser.parseString(Net.getConnection(url)).getAsJsonArray().forEach(element -> element.getAsJsonObject()
 				.entrySet().forEach(entry -> response.setProperty(entry.getKey(), entry.getValue().getAsString())));
 	}
@@ -140,7 +148,7 @@ public class Status {
 	}
 
 	/**
-	 * Check server status and list them.
+	 * Check server statuses and list them.
 	 * @param store Whether to store the output.
 	 * @return The all server statuses list as <code>Properties</code> format.
 	 * @since 0.0.4
@@ -157,7 +165,7 @@ public class Status {
 	}
 
 	/**
-	 * Check server status and list them.<br>
+	 * Check server statuses and list them.<br>
 	 * @return The all server statuses list as <code>Properties</code> format.
 	 * @since 0.0.4
 	 * @author XiaoPangxie732
@@ -167,16 +175,16 @@ public class Status {
 	}
 	
 	/**
-	 * Check server status and store them.
+	 * Check server statuses and store them.
 	 * @param path Path to store the output, {@code null} for default path(ServerStatus.properties on desktop)
-	 * @return Store complete or failed
+	 * @return Store outcome.
 	 * @since 0.1
 	 * @author XiaoPangxie732
 	 */
 	public boolean getAllStatus(String path) {
 		try {
 			response.store(new FileWriter(path),
-				"Server status output.\nMojangAPI-in-Java made by XiaoPangxie732.\nhttps://github.com/XiaoPangxie732/MojangAPI-in-Java");
+				"Server statuses output.\nMojangAPI-in-Java made by XiaoPangxie732.\nhttps://github.com/XiaoPangxie732/MojangAPI-in-Java");
 		} catch (IOException e) {
 			System.err.println("File store failed!");
 			System.err.print("Stacktrace: ");

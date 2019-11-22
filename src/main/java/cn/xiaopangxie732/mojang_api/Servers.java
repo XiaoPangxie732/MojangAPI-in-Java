@@ -1,5 +1,6 @@
 package cn.xiaopangxie732.mojang_api;
 
+import cn.xiaopangxie732.mojang_api.Status.StatusServer;
 import cn.xiaopangxie732.mojang_api.util.Net;
 
 /**
@@ -14,6 +15,7 @@ public class Servers {
 	 * @since 0.0.5
 	 */
 	public static String[] getBlockedServers() {
+		Status.ensureAvailable(StatusServer.SESSIONSERVER_MOJANG_COM);
 		return Net.getConnection("https://sessionserver.mojang.com/blockedservers")
 				.split("\n");
 	}

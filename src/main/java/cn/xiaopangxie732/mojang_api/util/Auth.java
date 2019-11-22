@@ -35,7 +35,7 @@ public class Auth {
 	 * @return Access token of the account
 	 */
 	public static String getAccessToken(String email, String password) throws IllegalStateException{
-		return new JsonParser().parse(authConnection(email, password)).getAsJsonObject().get("accessToken").getAsString();
+		return JsonParser.parseString(authConnection(email, password)).getAsJsonObject().get("accessToken").getAsString();
 	}
 	public static String postConnection(String url, String RequestParameters, String accessToken) {
 		StringBuffer response = new StringBuffer();
