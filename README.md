@@ -11,12 +11,12 @@ Follow [these steps](https://help.github.com/en/github/managing-packages-with-gi
 <dependency>
   <groupId>cn.xiaopangxie732</groupId>
   <artifactId>mojang-api</artifactId>
-  <version>0.1</version>
+  <version>0.1.1</version>
 </dependency>
 ```
   
 Jar file download: Please download file at [GitHub releases](https://github.com/XiaoPangxie732/MojangAPI-in-Java/releases/latest)  
-Javadoc: [Click here](https://xiaopangxie732.github.io/MojangAPI-in-Java/index.html)
+Javadoc: [Click here](https://xiaopangxie732.github.io/MojangAPI-in-Java/apidocs/index.html)
 ## How to build(from source):      
 1.Install [Maven](https://maven.apache.org/).  
 2.cd to source directory.  
