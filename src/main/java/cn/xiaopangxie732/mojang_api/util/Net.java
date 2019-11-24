@@ -20,13 +20,10 @@ package cn.xiaopangxie732.mojang_api.util;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.HttpURLConnection;
-import java.net.InetSocketAddress;
-import java.net.Proxy;
 import java.util.HashMap;
 import java.util.Optional;
 import java.util.concurrent.atomic.AtomicReference;
 import java.net.URL;
-import java.net.Proxy.Type;
 
 public final class Net {
 	private Net() {}
@@ -35,11 +32,9 @@ public final class Net {
 		StringBuffer response = new StringBuffer();
 		HttpURLConnection connection = null;
 		try {
-			connection = (HttpURLConnection)new URL(url).openConnection(
-//					new Proxy(Type.HTTP, new InetSocketAddress(8081))
-					);
+			connection = (HttpURLConnection)new URL(url).openConnection();
 			AtomicReference<HttpURLConnection> ref = new AtomicReference<>(connection);
-			Optional.ofNullable(headers).ifPresent(map -> map.forEach((k, v) -> ref.get().setRequestProperty(k, v)));
+			Optional.ofNullable(headers).ifPresent(map -> map.forEach(ref.get()::setRequestProperty));
 			connection.connect();
 			try(InputStream in = connection.getInputStream()) {
 				for(int i = in.read(); i != -1; i = in.read()) response.append((char)i);
@@ -63,9 +58,7 @@ public final class Net {
 		StringBuffer response = new StringBuffer();
 		HttpURLConnection connection = null;
 		try {
-			connection = (HttpURLConnection)new URL(url).openConnection(
-//					new Proxy(Type.HTTP, new InetSocketAddress(8081))
-					);
+			connection = (HttpURLConnection)new URL(url).openConnection();
 			connection.setDoOutput(true);
 			connection.setRequestMethod("POST");
 			connection.setRequestProperty("Content-Type", ContentType);
@@ -94,7 +87,7 @@ public final class Net {
 			connection.setDoOutput(true);
 			connection.setRequestMethod("POST");
 			AtomicReference<HttpURLConnection> ref = new AtomicReference<>(connection);
-			Optional.ofNullable(headers).ifPresent(map -> map.forEach((k, v) -> ref.get().setRequestProperty(k, v)));
+			Optional.ofNullable(headers).ifPresent(map -> map.forEach(ref.get()::setRequestProperty));
 			connection.setRequestProperty("Content-Type", ContentType);
 			connection.getOutputStream().write(RequestParameters.getBytes());
 			connection.connect();

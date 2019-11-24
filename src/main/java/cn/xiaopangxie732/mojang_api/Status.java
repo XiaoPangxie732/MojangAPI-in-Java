@@ -17,7 +17,6 @@
  */
 package cn.xiaopangxie732.mojang_api;
 
-import com.google.gson.JsonElement;
 import com.google.gson.JsonParser;
 
 import cn.xiaopangxie732.mojang_api.util.Net;

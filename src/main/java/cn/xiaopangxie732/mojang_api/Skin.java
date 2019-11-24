@@ -26,11 +26,13 @@ import java.net.HttpURLConnection;
 import java.net.URI;
 import java.net.URL;
 import java.net.URLEncoder;
+import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.Properties;
-
+import java.util.Objects;
 import javax.imageio.ImageIO;
-import com.google.gson.Gson;
+
+import com.google.gson.JsonArray;
+import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 
 import cn.xiaopangxie732.mojang_api.Status.StatusServer;
@@ -38,7 +40,7 @@ import cn.xiaopangxie732.mojang_api.util.Auth;
 import cn.xiaopangxie732.mojang_api.util.Net;
 
 /**
- * The class for operating the skin.
+ * Used for skin related operations.
  * @author XiaoPangxie732
  * @since 0.0.5
  */
@@ -90,7 +92,7 @@ public class Skin {
 			 */
 			connection.setRequestProperty("Content-Type", "multipart/form-data; boundary=TW9qYW5nQVBJLWluLUphdmFfZGF0YXRyYW5zZmVy");
 			ByteArrayOutputStream baos = new ByteArrayOutputStream();
-			ImageIO.write(ImageIO.read(new File(uri)), new File(uri).getName().split("\\.")[1], baos);
+			ImageIO.write(ImageIO.read(new File(uri)), "png", baos);
 			connection.getOutputStream().write(("--TW9qYW5nQVBJLWluLUphdmFfZGF0YXRyYW5zZmVy\r\n" + 
 					"Content-Disposition: form-data; name=\"model\"\r\n\r\n" + 
 					(isSlim ? "slim" : "") + "\r\n" + 
@@ -136,22 +138,19 @@ public class Skin {
 			connection.setRequestMethod("DELETE");
 			connection.setRequestProperty("Authorization", "Bearer " + access_token);
 			connection.connect();
-			InputStream in = connection.getInputStream();
-			int i;
-			while((i = in.read())!= -1) {
-				response.append((char)i);
+			try(InputStream in = connection.getInputStream()) {
+				for(int i = in.read(); i != -1; i = in.read()) 
+					response.append((char)i);
 			}
 		} catch(IOException ioe) {
-			InputStream err = connection.getErrorStream();
-			int i;
-			try {
-				while((i = err.read())!= -1) {
+			try(InputStream err = connection.getErrorStream()) {
+				for(int i = err.read(); i != -1; i = err.read()) 
 					response.append((char)i);
-				}
 			} catch (IOException e1) {
 				e1.printStackTrace();
 			}
-			throw new IllegalStateException(new Gson().fromJson(response.toString(), Properties.class).getProperty("errorMessage"));
+			throw new IllegalArgumentException(JsonParser.parseString(response.toString()).getAsJsonObject()
+					.get("errorMessage").getAsString());
 		} catch(Exception e) {
 			e.printStackTrace();
 		} finally {
@@ -165,6 +164,76 @@ public class Skin {
 	 */
 	public static class SecurityQA {
 		/**
+		 * Security question.
+		 * @author XiaoPangxie732
+		 * @since 0.1.1
+		 */
+		public static class Question {
+			private int id;
+			private String questionName;
+			private Answer answer;
+			Question(int id, String questionName, Answer answer) {
+				this.id = id;
+				this.questionName = questionName;
+				this.answer = answer;
+			}
+			/**
+			 * Get ID of the question.
+			 * @since 0.1.1
+			 * @return ID of the question.
+			 * @see <a href="https://wiki.vg/Mojang_API#Get_list_of_questions">Possible ID and Questions</a>
+			 */
+			public int getId() {
+				return id;
+			}
+			/**
+			 * Get name of the question.
+			 * @since 0.1.1
+			 * @return Name of the question.
+			 * @see <a href="https://wiki.vg/Mojang_API#Get_list_of_questions">Possible ID and Questions</a>
+			 */
+			public String getQuestionName() {
+				return questionName;
+			}
+			/**
+			 * Get Answer object of this question.
+			 * @since 0.1.1
+			 * @return Answer object of this question.
+			 */
+			public Answer getAnswer() {
+				return answer;
+			}
+		}
+		/**
+		 * Answer of the security question.
+		 * @author XiaoPangxie732
+		 * @since 0.1.1
+		 */
+		public static class Answer {
+			private int id;
+			private String answer;
+			Answer(int id) {
+				this.id = id;
+				answer = null;
+			}
+			/**
+			 * Set answer of the questions, required
+			 * @param answer Answer of the question
+			 * @return This object.
+			 * @since 0.1.1
+			 */
+			public Answer setAnswer(String answer) {
+				this.answer = answer;
+				return this;
+			}
+			JsonObject getJson() {
+				JsonObject obj = new JsonObject();
+				obj.addProperty("id", id);
+				obj.addProperty("answer", Objects.requireNonNull(answer, "Answer could not be null"));
+				return obj;
+			}
+		}
+		/**
 		 * Check if you need to answer security questions
 		 * @param accessToken Player's access token
 		 * @return true for need and false for not need
@@ -173,12 +242,50 @@ public class Skin {
 		 */
 		public static boolean checkNeeded(String accessToken) {
 			Status.ensureAvailable(StatusServer.API_MOJANG_COM);
-			HashMap<String, String> map = new HashMap<>();
+			HashMap<String, String> map = new HashMap<>(1);
 			map.put("Authorization", "Bearer " + accessToken);
-			String response = Net.getConnection("https://api.mojang.com/user/security/location", map);
-			System.out.println(response);
-			if(response.length() == 0) return false;
+			if(Net.getConnection("https://api.mojang.com/user/security/location", map).length() == 0) return false;
 			else return true;
+		}
+		/**
+		 * Get security questions must to answer.
+		 * @param accessToken Player's access token.
+		 * @return List of question you need answer.Total of 3.
+		 * @see Auth#getAccessToken(String, String)
+		 * @since 0.1.1
+		 */
+		public static ArrayList<Question> getQuestionList(String accessToken) {
+			Status.ensureAvailable(StatusServer.API_MOJANG_COM);
+			HashMap<String, String> map = new HashMap<>(1);
+			map.put("Authorization", "Bearer " + accessToken);
+			ArrayList<Question> questions = new ArrayList<>(3);
+			JsonParser.parseString(Net.getConnection("https://api.mojang.com/user/security/challenges", map))
+			.getAsJsonArray().forEach(ele -> {
+				JsonObject obj = ele.getAsJsonObject().get("question").getAsJsonObject();
+				questions.add(new Question(obj.get("id").getAsInt(), obj.get("question").getAsString(), 
+					new Answer(ele.getAsJsonObject().get("answer").getAsJsonObject().get("id").getAsInt())));
+			});
+			return questions;
+		}
+		/**
+		 * Send back the answers of security questions to verify your IP.
+		 * @param accessToken Player's access token.
+		 * @param answers The answers of questions.
+		 * @throws IllegalArgumentException When at least one answer is incorrect.
+		 * @throws IllegalArgumentException When the amount of the answers more than 3 or less than 3.
+		 * @since 0.1.1
+		 */
+		public static void sendBackAnswers(String accessToken, ArrayList<Answer> answers) throws IllegalArgumentException {
+			if(answers.size() != 3) throw new IllegalArgumentException("Amount of the answer can only be 3");
+			Status.ensureAvailable(StatusServer.API_MOJANG_COM);
+			HashMap<String, String> map = new HashMap<>(1);
+			map.put("Authorization", "Bearer " + accessToken);
+			JsonArray reqVar = new JsonArray(3);
+			answers.forEach(a -> reqVar.add(a.getJson()));
+			String response = Net.postConnection("https://api.mojang.com/user/security/location", 
+					"application/json", reqVar.toString(), map);
+			if(response.length()>0) throw new IllegalArgumentException(JsonParser.parseString(response)
+					.getAsJsonObject().get("errorMessage").getAsString());
 		}
 	}
 }
