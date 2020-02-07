@@ -11,7 +11,7 @@ Follow [these steps](https://help.github.com/en/github/managing-packages-with-gi
 <dependency>
   <groupId>cn.xiaopangxie732</groupId>
   <artifactId>mojang-api</artifactId>
-  <version>0.1.1</version>
+  <version>0.1.1.Final</version>
 </dependency>
 ```
   
