@@ -1,3 +1,4 @@
+![Java CI](https://github.com/XiaoPangxie732/MojangAPI-in-Java/workflows/Java%20CI/badge.svg)
 # MojangAPI-in-Java
 Mojang Public API Java implementation.  
 
