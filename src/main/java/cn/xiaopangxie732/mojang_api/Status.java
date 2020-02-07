@@ -1,6 +1,6 @@
 /*
  *  MojangAPI-in-Java--Mojang Public API Java implementation.
- *  Copyright (C) 2019  XiaoPangxie732
+ *  Copyright (C) 2019-2020  XiaoPangxie732
  * 
  *  This program is free software: you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -109,7 +109,7 @@ public class Status {
 	/*
 	 * Used for server status checking in MojangAPI-in-Java
 	 */
-	private static Status status = new Status();
+	private static final Status status = new Status();
 	static void ensureAvailable(StatusServer server) {
 		if(status.getStatus(server) == StatusType.RED) throw new ServiceException("Server service unavailable");
 	}
@@ -119,7 +119,7 @@ public class Status {
 	 * @since 0.0.1
 	 */
 	public Status() {
-		if(Objects.isNull(response)) response = new Properties();
+		if(response == null) response = new Properties();
 		JsonParser.parseString(Net.getConnection(url)).getAsJsonArray().forEach(element -> element.getAsJsonObject()
 				.entrySet().forEach(entry -> response.setProperty(entry.getKey(), entry.getValue().getAsString())));
 	}
@@ -140,7 +140,6 @@ public class Status {
 			case "yellow":
 				return StatusType.YELLOW;
 			case "red":
-				return StatusType.RED;
 			default:
 				return StatusType.RED;
 		}

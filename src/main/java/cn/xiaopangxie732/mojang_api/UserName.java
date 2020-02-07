@@ -1,6 +1,6 @@
 /*
  *  MojangAPI-in-Java--Mojang Public API Java implementation.
- *  Copyright (C) 2019  XiaoPangxie732
+ *  Copyright (C) 2019-2020  XiaoPangxie732
  * 
  *  This program is free software: you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
