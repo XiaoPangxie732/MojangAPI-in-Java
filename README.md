@@ -10,8 +10,8 @@ Maven:
 ```xml
 <repository>
   <id>github</id>
-  <name>GitHub OWNER Apache Maven Packages</name>
-  <url>https://maven.pkg.github.com/OWNER/REPOSITORY</url>
+  <name>GitHub XiaoPangxie732 Apache Maven Packages</name>
+  <url>https://maven.pkg.github.com/XiaoPangxie732/MojangAPI-in-Java</url>
 </repository>
 <dependency>
   <groupId>cn.xiaopangxie732</groupId>
