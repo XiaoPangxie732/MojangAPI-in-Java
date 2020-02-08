@@ -7,6 +7,7 @@ Usage is in [Wiki](https://github.com/XiaoPangxie732/MojangAPI-in-Java/wiki)
 
 ## Download
 Maven:  
+Follow [these steps](https://help.github.com/en/packages/using-github-packages-with-your-projects-ecosystem/configuring-apache-maven-for-use-with-github-packages#authenticating-to-github-packages) to add repository first.
 ```xml
 <repositories>
   <repository>
