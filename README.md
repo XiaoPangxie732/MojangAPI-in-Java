@@ -8,16 +8,20 @@ Usage is in [Wiki](https://github.com/XiaoPangxie732/MojangAPI-in-Java/wiki)
 ## Download
 Maven:  
 ```xml
-<repository>
-  <id>github</id>
-  <name>GitHub XiaoPangxie732 Apache Maven Packages</name>
-  <url>https://maven.pkg.github.com/XiaoPangxie732/MojangAPI-in-Java</url>
-</repository>
-<dependency>
-  <groupId>cn.xiaopangxie732</groupId>
-  <artifactId>mojang-api</artifactId>
-  <version>0.1.1.Final</version>
-</dependency>
+<repositories>
+  <repository>
+    <id>github</id>
+    <name>GitHub XiaoPangxie732 Apache Maven Packages</name>
+    <url>https://maven.pkg.github.com/XiaoPangxie732/MojangAPI-in-Java</url>
+  </repository>
+</repositories>
+<dependencies>
+  <dependency>
+    <groupId>cn.xiaopangxie732</groupId>
+    <artifactId>mojang-api</artifactId>
+    <version>0.1.1.Final</version>
+  </dependency>
+</dependencies>
 ```
   
 Jar file download: Please download file at [GitHub releases](https://github.com/XiaoPangxie732/MojangAPI-in-Java/releases/latest)  
