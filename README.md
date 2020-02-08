@@ -7,8 +7,12 @@ Usage is in [Wiki](https://github.com/XiaoPangxie732/MojangAPI-in-Java/wiki)
 
 ## Download
 Maven:  
-Follow [these steps](https://help.github.com/en/github/managing-packages-with-github-packages/configuring-apache-maven-for-use-with-github-packages#installing-a-package) to add repository first.
 ```xml
+<repository>
+  <id>github</id>
+  <name>GitHub OWNER Apache Maven Packages</name>
+  <url>https://maven.pkg.github.com/OWNER/REPOSITORY</url>
+</repository>
 <dependency>
   <groupId>cn.xiaopangxie732</groupId>
   <artifactId>mojang-api</artifactId>
@@ -20,6 +24,6 @@ Jar file download: Please download file at [GitHub releases](https://github.com/
 Javadoc: [Click here](https://xiaopangxie732.github.io/MojangAPI-in-Java/apidocs/index.html)
 ## How to build(from source):      
 1.Install [Maven](https://maven.apache.org/).  
-2.cd to source directory.  
+2.`cd` to source directory.  
 3.Run <code>mvn clean install</code>  
 4.When build complete, files are all in target folder. 
